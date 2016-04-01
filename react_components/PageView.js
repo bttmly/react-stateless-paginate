@@ -16,7 +16,7 @@ export default function PageView (props) {
 
   return (
     <li className={cssClassName}>
-      <a {...props} href={props.linkHref} className={linkClassName}>
+      <a href={props.linkHref} className={linkClassName}>
         {props.page}
       </a>
     </li>

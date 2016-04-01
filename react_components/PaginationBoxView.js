@@ -20,16 +20,20 @@ function StaticPaginationBoxView (props) {
   const previousClasses = classNames(props.previousClassName, {disabled: selected === 0});
   const nextClasses = classNames(props.nextClassName, {disabled: selected === props.pageNum - 1});
 
+  // "selected" is one less than the number displayed
+  const previousHref = selected === 0 ? "#" : props.hrefPrefix + selected;
+  const nextHref = selected === props.pageNum - 1 ? "#" : props.hrefPrefix + (selected + 2);
+
   return (
     <ul className={props.containerClassName}>
       <li className={previousClasses}>
-        <a href="" className={props.previousLinkClassName}>{props.previousLabel}</a>
+        <a href={previousHref} className={props.previousLinkClassName}>{props.previousLabel}</a>
       </li>
 
       {createFragment(items)}
 
       <li className={nextClasses}>
-        <a href="" className={props.nextLinkClassName}>{props.nextLabel}</a>
+        <a href={nextHref} className={props.nextLinkClassName}>{props.nextLabel}</a>
       </li>
     </ul>
   );
