@@ -1,26 +1,25 @@
-'use strict';
+"use strict";
 
-import React from 'react';
+import React from "react";
 
-export default class PageView extends React.Component {
-  render() {
-    let linkClassName = this.props.pageLinkClassName;
-    let cssClassName = this.props.pageClassName;
+export default function PageView (props) {
+  let linkClassName = props.pageLinkClassName;
+  let cssClassName = props.pageClassName;
 
-    if (this.props.selected) {
-      if (typeof(cssClassName) !== 'undefined') {
-        cssClassName = cssClassName + ' ' + this.props.activeClassName;
-      } else {
-        cssClassName = this.props.activeClassName;
-      }
+  if (props.selected) {
+    if (cssClassName != null) {
+      cssClassName = cssClassName + " " + props.activeClassName;
+    } else {
+      cssClassName = props.activeClassName;
     }
-
-    return (
-        <li className={cssClassName}>
-            <a {...this.props} href="" className={linkClassName}>
-              {this.props.page}
-            </a>
-        </li>
-    );
   }
-};
+
+  return (
+    <li className={cssClassName}>
+      <a {...props} href={props.linkHref} className={linkClassName}>
+        {props.page}
+      </a>
+    </li>
+  );
+}
+
