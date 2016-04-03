@@ -6,6 +6,7 @@ import classNames from "classnames";
 import createFragment from "react-addons-create-fragment";
 import PageView from "./PageView";
 import BreakView from "./BreakView";
+import paginate from "./paginate";
 
 function StaticPaginationBoxView (props) {
   const selected = (
@@ -14,7 +15,24 @@ function StaticPaginationBoxView (props) {
     0
   );
 
-  const items = pagination(props, selected);
+  function Block (data) {
+    return data.type === "page" ?
+      <PageView
+        selected={data.selected}
+        pageClassName={props.pageClassName}
+        pageLinkClassName={props.pageLinkClassName}
+        activeClassName={props.activeClassName}
+        page={data.page} 
+        linkHref={props.hrefPrefix + data.page}
+      /> :
+      <BreakView breakLabel={props.breakLabel} />;
+  }
+
+  const items = paginate(props, selected);
+  const pages = Object.keys(items).reduce(function (out, key) {
+    out[key] = Block(items[key]);
+    return out;
+  }, {});
 
   // let disabled = props.disabledClassName;
   const previousClasses = classNames(props.previousClassName, {disabled: selected === 0});
@@ -30,7 +48,7 @@ function StaticPaginationBoxView (props) {
         <a href={previousHref} className={props.previousLinkClassName}>{props.previousLabel}</a>
       </li>
 
-      {createFragment(items)}
+      {createFragment(pages)}
 
       <li className={nextClasses}>
         <a href={nextHref} className={props.nextLinkClassName}>{props.nextLabel}</a>
@@ -74,89 +92,6 @@ StaticPaginationBoxView.defaultProps = {
   breakLabel           : "...",
   disabledClassName    : "disabled",
   hrefPrefix           : "/page/",
-}
-
-function pagination (props, selected) {
-  let items = {};
-
-  if (props.pageNum <= props.pageRangeDisplayed) {
-
-    for (let index = 0; index < props.pageNum; index++) {
-      items["key" + index] = (
-        <PageView
-          selected={selected === index}
-          pageClassName={props.pageClassName}
-          pageLinkClassName={props.pageLinkClassName}
-          activeClassName={props.activeClassName}
-          page={index + 1} 
-          linkHref={props.hrefPrefix + (index + 1)}
-        />
-      );
-    }
-
-  } else {
-
-    let leftSide  = (props.pageRangeDisplayed / 2);
-    let rightSide = (props.pageRangeDisplayed - leftSide);
-
-    if (selected > props.pageNum - props.pageRangeDisplayed / 2) {
-      rightSide = props.pageNum - selected;
-      leftSide  = props.pageRangeDisplayed - rightSide;
-    }
-    else if (selected < props.pageRangeDisplayed / 2) {
-      leftSide  = selected;
-      rightSide = props.pageRangeDisplayed - leftSide;
-    }
-
-    let index;
-    let page;
-    let breakView;
-
-    for (index = 0; index < props.pageNum; index++) {
-
-      page = index + 1;
-
-      let pageView = (
-        <PageView
-          selected={selected === index}
-          pageClassName={props.pageClassName}
-          pageLinkClassName={props.pageLinkClassName}
-          activeClassName={props.activeClassName}
-          page={index + 1}
-          linkHref={props.hrefPrefix + (index + 1)}
-        />
-      );
-
-      if (page <= props.marginPagesDisplayed) {
-        items["key" + index] = pageView;
-        continue;
-      }
-
-      if (page > props.pageNum - props.marginPagesDisplayed) {
-        items["key" + index] = pageView;
-        continue;
-      }
-
-      if ((index >= selected - leftSide) && (index <= selected + rightSide)) {
-        items["key" + index] = pageView;
-        continue;
-      }
-
-      let keys            = Object.keys(items);
-      let breakLabelKey   = keys[keys.length - 1];
-      let breakLabelValue = items[breakLabelKey];
-
-      if (props.breakLabel && breakLabelValue !== breakView) {
-        breakView = (
-          <BreakView breakLabel={props.breakLabel} />
-        );
-
-        items["key" + index] = breakView;
-      }
-    }
-  }
-
-  return items;
 }
 
 export default StaticPaginationBoxView;

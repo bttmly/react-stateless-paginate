@@ -33,7 +33,7 @@ module.exports = {
             },
             {
                 loader: 'babel-loader',
-                test: path.join(__dirname, '..', 'react_components'),
+                test: path.join(__dirname, '..', 'src'),
                 query: {
                     presets: ['es2015', 'react', 'stage-0'],
                 },
@@ -42,7 +42,7 @@ module.exports = {
     },
     resolve: {
         alias: {
-            'react-paginate': path.join(__dirname, '..', 'react_components')
+            'react-paginate': path.join(__dirname, '..', 'src')
         }
     },
     stats: {
