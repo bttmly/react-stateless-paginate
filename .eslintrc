@@ -1,0 +1,9 @@
+{
+  "extends": "airbnb",
+  "rules": {
+    "space-before-function-paren": [2, "always"],
+    "quotes": [2, "double"],
+    "key-spacing": 0,
+    "comma-dangle": [2, "always-multiline"]
+  }
+}

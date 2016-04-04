@@ -1,34 +1,34 @@
 /* global __dirname */
 
-var path = require('path');
+var path = require("path");
 
-var webpack = require('webpack');
+var webpack = require("webpack");
 
-var dir_js = path.resolve(__dirname, 'react_components');
-var dir_build = path.resolve(__dirname, 'build');
+var jsDir = path.resolve(__dirname, "src");
+var buildDir = path.resolve(__dirname, "build");
 
 module.exports = {
-    entry: path.resolve(dir_js, 'index.js'),
+    entry: path.resolve(jsDir, "index.js"),
     output: {
-        path: dir_build,
-        library: 'ReactPaginate',
-        libraryTarget: 'umd',
-        filename: 'react-paginate.js'
+        path: buildDir,
+        library: "ReactPaginate",
+        libraryTarget: "umd",
+        filename: "react-paginate.js"
     },
     devServer: {
-        contentBase: dir_build,
+        contentBase: buildDir,
     },
     module: {
         loaders: [
             {
-                loader: 'react-hot',
-                test: dir_js,
+                loader: "react-hot",
+                test: jsDir,
             },
             {
-                loader: 'babel-loader',
-                test: dir_js,
+                loader: "babel-loader",
+                test: jsDir,
                 query: {
-                    presets: ['es2015', 'react', 'stage-0'],
+                    presets: ["es2015", "react", "stage-0"],
                 },
             }
         ]
@@ -36,15 +36,15 @@ module.exports = {
     externals: [
         {
             react: {
-                root: 'React',
-                amd: 'react',
-                commonjs: 'react',
-                commonjs2: 'react'
+                root: "React",
+                amd: "react",
+                commonjs: "react",
+                commonjs2: "react"
             }
         }
     ],
     stats: {
         colors: true
     },
-    devtool: 'source-map',
+    devtool: "source-map",
 };

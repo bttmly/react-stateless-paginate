@@ -1,42 +1,27 @@
 "use strict";
 
-import React, { Component, PropTypes } from "react";
+import React, { PropTypes } from "react";
 import classNames from "classnames";
 
 import createFragment from "react-addons-create-fragment";
-import PageView from "./PageView";
-import BreakView from "./BreakView";
 import paginate from "./paginate";
 
-function StaticPaginationBoxView (props) {
+export default function Pagination (props) {
   const selected = (
     props.initialSelected ? props.initialSelected :
     props.forceSelected   ? props.forceSelected :
     0
   );
 
-  function Block (data) {
-    return data.type === "page" ?
-      <PageView
-        selected={data.selected}
-        pageClassName={props.pageClassName}
-        pageLinkClassName={props.pageLinkClassName}
-        activeClassName={props.activeClassName}
-        page={data.page} 
-        linkHref={props.hrefPrefix + data.page}
-      /> :
-      <BreakView breakLabel={props.breakLabel} />;
-  }
-
-  const items = paginate(props, selected);
-  const pages = Object.keys(items).reduce(function (out, key) {
-    out[key] = Block(items[key]);
+  const Block = BlockFactory(props);
+  const pages = paginate(props, selected).reduce(function (out, item, index) {
+    out["key" + index] = Block(item);
     return out;
   }, {});
 
-  // let disabled = props.disabledClassName;
-  const previousClasses = classNames(props.previousClassName, {disabled: selected === 0});
-  const nextClasses = classNames(props.nextClassName, {disabled: selected === props.pageNum - 1});
+  const disabled = props.disabledClassName;
+  const previousClasses = classNames(props.previousClassName, { [disabled]: selected === 0 });
+  const nextClasses = classNames(props.nextClassName, { [disabled]: selected === props.pageNum - 1 });
 
   // "selected" is one less than the number displayed
   const previousHref = selected === 0 ? "#" : props.hrefPrefix + selected;
@@ -57,7 +42,7 @@ function StaticPaginationBoxView (props) {
   );
 }
 
-StaticPaginationBoxView.propTypes = {
+Pagination.propTypes = {
   pageNum               : PropTypes.number.isRequired,
   pageRangeDisplayed    : PropTypes.number.isRequired,
   marginPagesDisplayed  : PropTypes.number.isRequired,
@@ -78,9 +63,9 @@ StaticPaginationBoxView.propTypes = {
   nextLinkClassName     : PropTypes.string,
   disabledClassName     : PropTypes.string,
   hrefPrefix            : PropTypes.string,
-}
+};
 
-StaticPaginationBoxView.defaultProps = {
+Pagination.defaultProps = {
   pageNum              : 10,
   pageRangeDisplayed   : 2,
   marginPagesDisplayed : 3,
@@ -92,6 +77,50 @@ StaticPaginationBoxView.defaultProps = {
   breakLabel           : "...",
   disabledClassName    : "disabled",
   hrefPrefix           : "/page/",
+};
+
+function BlockFactory (props) {
+  return function Block (data) {
+    return data.type === "page" ?
+      <Page
+        selected={data.selected}
+        pageClassName={props.pageClassName}
+        pageLinkClassName={props.pageLinkClassName}
+        activeClassName={props.activeClassName}
+        page={data.page} 
+        linkHref={props.hrefPrefix + data.page}
+      /> :
+      <Break breakLabel={props.breakLabel} />;
+  };
 }
 
-export default StaticPaginationBoxView;
+function Page (props) {
+  let linkClassName = props.pageLinkClassName;
+  let cssClassName = props.pageClassName;
+
+  if (props.selected) {
+    if (cssClassName != null) {
+      cssClassName = cssClassName + " " + props.activeClassName;
+    } else {
+      cssClassName = props.activeClassName;
+    }
+  }
+
+  return (
+    <li className={cssClassName}>
+      <a href={props.linkHref} className={linkClassName}>
+        {props.page}
+      </a>
+    </li>
+  );
+}
+
+function Break (props) {
+  const label = props.breakLabel;
+  return (
+    <li className="break">
+      {label}
+    </li>
+  );
+}
+

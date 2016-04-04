@@ -1,59 +1,50 @@
-export default function pagination (props, selected) {
-  let items = {};
+// The generic, plain 'ol JS pagination algorithm
+// returns an array of objects representing something like
+// [ [1] [2] [...] [6] [7] [8] [...] [167] [168] ]
 
-  if (props.pageNum <= props.pageRangeDisplayed) {
+export default function pagination (params) {
+  const items = [];
 
-    for (let index = 0; index < props.pageNum; index++) {
-      items["key" + index] = { type: "page", page: index + 1, selected: selected === index };
+  // these are all Numbers
+  const { pageNum, selected, pageRangeDisplayed, marginPagesDisplayed } = params;
+
+  if (pageNum <= pageRangeDisplayed) {
+    for (let index = 0; index < pageNum; index++) {
+      items.push({ type: "page", page: index + 1, selected: selected === index });
     }
 
-  } else {
+    return items;
+  }
 
-    let leftSide  = (props.pageRangeDisplayed / 2);
-    let rightSide = (props.pageRangeDisplayed - leftSide);
+  let leftSide = (pageRangeDisplayed / 2);
+  let rightSide = (pageRangeDisplayed - leftSide);
 
-    if (selected > props.pageNum - props.pageRangeDisplayed / 2) {
-      rightSide = props.pageNum - selected;
-      leftSide  = props.pageRangeDisplayed - rightSide;
+  if (selected > pageNum - pageRangeDisplayed / 2) {
+    rightSide = pageNum - selected;
+    leftSide = pageRangeDisplayed - rightSide;
+  } else if (selected < pageRangeDisplayed / 2) {
+    leftSide = selected;
+    rightSide = pageRangeDisplayed - leftSide;
+  }
+
+  let breakView;
+  for (let index = 0; index < pageNum; index++) {
+    const page = index + 1;
+    const pageView = { type: "page", page, selected: selected === index };
+
+    if (
+      page <= marginPagesDisplayed ||
+      page > pageNum - marginPagesDisplayed ||
+      ((index >= selected - leftSide) && (index <= selected + rightSide))
+    ) {
+      items.push(pageView);
+      continue;
     }
-    else if (selected < props.pageRangeDisplayed / 2) {
-      leftSide  = selected;
-      rightSide = props.pageRangeDisplayed - leftSide;
-    }
 
-    let index;
-    let page;
-    let breakView;
-
-    for (index = 0; index < props.pageNum; index++) {
-
-      page = index + 1;
-
-      let pageView = { type: "page", page, selected: selected === index };
-
-      if (page <= props.marginPagesDisplayed) {
-        items["key" + index] = pageView;
-        continue;
-      }
-
-      if (page > props.pageNum - props.marginPagesDisplayed) {
-        items["key" + index] = pageView;
-        continue;
-      }
-
-      if ((index >= selected - leftSide) && (index <= selected + rightSide)) {
-        items["key" + index] = pageView;
-        continue;
-      }
-
-      let keys            = Object.keys(items);
-      let breakLabelKey   = keys[keys.length - 1];
-      let breakLabelValue = items[breakLabelKey];
-
-      if (breakLabelValue !== breakView) {
-        breakView = { type: "break" };
-        items["key" + index] = breakView;
-      }
+    const lastValue = items[items.length - 1];
+    if (lastValue !== breakView) {
+      breakView = { type: "break" };
+      items.push(breakView);
     }
   }
 

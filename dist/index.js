@@ -1,10 +1,10 @@
-'use strict';
+"use strict";
 
-var _PaginationBoxView = require('./PaginationBoxView');
+var _Pagination = require("./Pagination");
 
-var _PaginationBoxView2 = _interopRequireDefault(_PaginationBoxView);
+var _Pagination2 = _interopRequireDefault(_Pagination);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-module.exports = _PaginationBoxView2.default;
+module.exports = _Pagination2.default;
 //# sourceMappingURL=index.js.map
