@@ -2,10 +2,14 @@
 // returns an array of objects representing something like
 // [ [1] [2] [...] [6] [7] [8] [...] [167] [168] ]
 
+// factored apart from React stuff since others might find it
+// useful as a base algorithm for other pagination packages.
+// Maybe make own npm package?
+
 export default function pagination (params) {
   const items = [];
 
-  // these are all Numbers
+  // these parameters should all be *integers*
   const { pageNum, selected, pageRangeDisplayed, marginPagesDisplayed } = params;
 
   if (pageNum <= pageRangeDisplayed) {
@@ -30,14 +34,13 @@ export default function pagination (params) {
   let breakView;
   for (let index = 0; index < pageNum; index++) {
     const page = index + 1;
-    const pageView = { type: "page", page, selected: selected === index };
 
     if (
       page <= marginPagesDisplayed ||
       page > pageNum - marginPagesDisplayed ||
       ((index >= selected - leftSide) && (index <= selected + rightSide))
     ) {
-      items.push(pageView);
+      items.push({ type: "page", page, selected: selected === index });
       continue;
     }
 
