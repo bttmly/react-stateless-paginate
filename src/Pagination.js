@@ -91,7 +91,7 @@ function BlockFactory (props) {
         linkHref={props.hrefPrefix + data.page}
       /> :
       <Break breakLabel={props.breakLabel} />;
-  };
+  }
 }
 
 function Page (props) {
@@ -100,7 +100,7 @@ function Page (props) {
 
   if (props.selected) {
     if (cssClassName != null) {
-      cssClassName = cssClassName + " " + props.activeClassName;
+      cssClassName = `${cssClassName} ${props.activeClassName}`;
     } else {
       cssClassName = props.activeClassName;
     }
@@ -114,6 +114,16 @@ function Page (props) {
     </li>
   );
 }
+
+Page.propTypes = {
+  page:              PropTypes.number.isRequired,
+  selected:          PropTypes.boolean.isRequired,
+  linkHref:          PropTypes.string.isRequired,
+  pageLinkClassName: PropTypes.string,
+  cssClassName:      PropTypes.string,
+  activeClassName:   PropTypes.string,
+  pageClassName:     PropTypes.string,
+};
 
 function Break (props) {
   const label = props.breakLabel;

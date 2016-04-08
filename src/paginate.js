@@ -6,6 +6,11 @@
 // useful as a base algorithm for other pagination packages.
 // Maybe make own npm package?
 
+// each item has a schema of the following, where 'page' and 'selected'
+// are only present when 'type' === 'page'
+// { type: Enum{"page", "break"}, page: Number?, selected: Boolean? }
+
+
 export default function pagination (params) {
   const items = [];
 
